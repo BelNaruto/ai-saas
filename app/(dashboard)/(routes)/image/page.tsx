@@ -25,12 +25,14 @@ import { BotAvatar } from "@/components/bot-avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import { useProModal } from "@/hooks/use-pro-model";
 
 
 
 
 
 const ImagePage=()=>{
+    const proModal= useProModal();
     const router = useRouter();
     // CreateChatCompletionRequestMessage
     const [images, setImages]=useState<string[]>([]);
@@ -58,8 +60,11 @@ const ImagePage=()=>{
         form.reset();
         
     } catch (error:any) {
-        // TODO: Open Pro Modal
-        console.log(error);
+              // check the error message
+       if(error?.response?.status=== 403){
+        proModal.onOpen();
+
+       }
         
     } finally{
         router.refresh()

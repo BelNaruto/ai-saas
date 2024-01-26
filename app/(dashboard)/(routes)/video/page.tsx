@@ -3,7 +3,7 @@
 import axios from "axios";
 import * as z from "zod";
 import { Heading } from "@/components/heading";
-import { Music } from "lucide-react";
+import { VideoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {Form, FormControl, FormField, FormItem} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
@@ -24,11 +24,11 @@ import { useProModal } from "@/hooks/use-pro-model";
 
 
 
-const MusicPage=()=>{
+const VideoPage=()=>{
     const proModal= useProModal();
     const router = useRouter();
     // CreateChatCompletionRequestMessage
-    const [music, setMusic]= useState<string>();
+    const [video, setVideo]= useState<string>();
 
 
     const form= useForm<z.infer<typeof formSchema>>({
@@ -42,22 +42,22 @@ const MusicPage=()=>{
    const onSubmit= async(values: z.infer<typeof formSchema>)=>{
     try {
 
-        setMusic(undefined);
+        setVideo(undefined);
 
      
-        const response=await axios.post("/api/music", values);
+        const response=await axios.post("/api/video", values);
 
-        setMusic(response.data.audio);
+        setVideo(response.data[0]);
           
   
         form.reset();
         
     } catch (error:any) {
-       // check the error message
-       if(error?.response?.status=== 403){
-        proModal.onOpen();
-
-       }
+          // check the error message
+          if(error?.response?.status=== 403){
+            proModal.onOpen();
+    
+           }
         
     } finally{
         router.refresh()
@@ -67,11 +67,11 @@ const MusicPage=()=>{
     return (
         <div>
            <Heading 
-           title="Music Generation"
-           description="Turn your prompt into music."
-           icon={Music}
-           iconColor="text-emerald-500"
-           bgColor="bg-emerald-500/10"
+           title="Video Generation"
+           description="Turn your prompt into video."
+           icon={VideoIcon}
+           iconColor="text-orange-700"
+           bgColor="bg-orange-700/10"
            />
            <div className= "px-4 lg:px-8">
             <div>
@@ -95,7 +95,7 @@ const MusicPage=()=>{
                                     focus-visible:ring-transparent
                                     "
                                     disabled={isLoading}
-                                    placeholder="Piano Solo"
+                                    placeholder="Clown fish swimming around a coral reef"
                                     {...field}
                                     />
 
@@ -123,17 +123,19 @@ const MusicPage=()=>{
                         <Loader/>
                     </div>
                 )}
-            {!music && !isLoading && (
-                <Empty label="No Music generated"/>
+            {!video && !isLoading && (
+                <Empty label="No Video generated"/>
             )}
 
-            {music && (
-                <audio controls className="w-full mt-8">
-                    <source src={music}/>
+            {video && (
+                <video 
+                controls
+                className="w-full aspect-video mt-8 rounded-lg border bg-black">
+                    <source src={video}/>
 
-
-                </audio>
-            )}
+                </video>
+                
+                )}
 
       
 
@@ -143,4 +145,4 @@ const MusicPage=()=>{
     );
 }
 
-export default MusicPage;
+export default VideoPage;

@@ -20,11 +20,13 @@ import { Loader } from "@/components/loader";
 import {cn} from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
+import { useProModal } from "@/hooks/use-pro-model";
 
 
 
 
 const ConversationPage=()=>{
+    const proModal= useProModal();
     const router = useRouter();
     // CreateChatCompletionRequestMessage
     const [messages, setMessages]=useState<ChatCompletionRequestMessage[]>([]);
@@ -54,9 +56,12 @@ const ConversationPage=()=>{
 
         form.reset();
         
-    } catch (error:any) {
-        // TODO: Open Pro Modal
-        console.log(error);
+    } catch (error: any) {
+       // check the error message
+       if(error?.response?.status=== 403){
+        proModal.onOpen();
+
+       }
         
     } finally{
         router.refresh()
